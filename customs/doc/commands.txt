@@ -1,0 +1,24 @@
+ffserver -f ffserver.conf
+
+[mac]
+
+ffmpeg -y -f avfoundation -i "0:0" -c:v libvpx -preset ultrafast -tune zerolatency -r 25 -async 1 -c:a libvorbis -bufsize 3000k -cpu-used 2 -threads 8 http://localhost:8090/streamwebm.ffm
+
+ffmpeg -y -f avfoundation -i "0:0" -c:v libvpx -preset ultrafast -tune zerolatency -r 25 -async 1 -c:a libvorbis -bufsize 3000k -cpu-used 2 -threads 8 http://192.168.0.108:8090/streamwebm.ffm
+
+
+
+[ubuntu]
+
+ffmpeg -y -f video4linux2 -s 640x480 -r 30 -i /dev/video0 -f alsa -i pulse -c:v libvpx -preset ultrafast -tune zerolatency -c:a libvorbis -bufsize 3000k -cpu-used 4 -threads 8 http://localhost:8090/streamwebm.ffm
+
+
+ ffmpeg -y -f video4linux2 -pixel_formats yuyv422 -s 640x480 -r 25 i /dev/video0 -f alsa -i pulse -c:v libvpx -preset ultrafast -tune zerolatency -r 25 -async 1 -c:a libvorbis -bufsize 3000k -cpu-used 2 -threads 8 http://localhost:8090/streamwebm.ffm
+
+
+ ffmpeg -y -f video4linux2 -s 640x480 -r 25 i /dev/video0 -f alsa -i pulse -c:v libvpx -preset ultrafast -tune zerolatency -r 25 -async 1 -c:a libvorbis -bufsize 3000k -cpu-used 2 -threads 8 http://localhost:8090/streamwebm.ffm
+
+
+
+
+ sudo ffmpeg -f video4linux2 -r 25 -s 640x480 -i /dev/video0 -f alsa -i pulse -c:v libx264 -preset ultrafast -tune zerolatency -c:a libfdk_aac -bufsize 3000k -cpu-used 4 -threads 9 -f rtsp "rtsp://dfac40.entrypoint.cloud.wowza.com/app-dea5/live/8a8f34ff"

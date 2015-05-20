@@ -1,0 +1,65 @@
+ubuntu 14.04
+
+/etc/network/interfaces
+auto eth0
+iface eth0 inet static
+address 106.242.202.189
+netmask 255.255.255.0
+gateway 106.242.202.185
+
+/etc/resolv.conf
+
+nameserver xxx <- this would be automatically added.
+
+/etc/init.d/networking restart
+
+
+
+sudo apt-get update -y
+sudo apt-get remove libav-tools
+sudo add-apt-repository ppa:mc3man/trusty-media
+sudo apt-get update
+sudo apt-get install ffmpeg gstreamer0.10-ffmpeg gstreamer0.10-fluendo-mp3 gstreamer0.10-gnonlin gstreamer0.10-plugins-bad-multiverse gstreamer0.10-plugins-bad gstreamer0.10-plugins-ugly totem-plugins-extra gstreamer-tools ubuntu-restricted-extras libxine1-ffmpeg gxine mencoder mpeg2dec vorbis-tools id3v2 mpg321 mpg123 libflac++6 totem-mozilla icedax tagtool easytag id3tool lame nautilus-script-audio-convert libmad0 libjpeg-progs flac faac faad sox ffmpeg2theora libmpeg2-4 uudeview flac libmpeg3-1 mpeg3-utils mpegdemux liba52-0.7.4-dev libquicktime2
+
+ls /usr/bin
+ffserver -devices
+ffserver -devices -i "" 
+ffmpeg -devices
+ffmpeg -f video4linux2 -list_formats all -i /dev/video0
+
+sudo apt-get install nginx
+ip addr show eth0 | grep inet | awk '{ print $2; }' | sed 's/\/.*$//'
+curl http://icanhazip.com
+sudo apt-get install mysql-server
+sudo mysql_install_db
+sudo mysql_secure_installation
+sudo apt-get install php5-fpm php5-mysql
+
+
+
+sudo mkdir -p /etc/nginx/ssl
+
+sudo openssl req -new -newkey rsa:4096 -days 365 -nodes -x509 -subj "/C=US/ST=State/L=Town/O=Office/CN=localhost" -keyout /etc/nginx/ssl/localhost.key -out /etc/nginx/ssl/localhost.crt
+
+sudo ln -sfv /etc/nginx/sites-available/default /etc/nginx/sites-enabled/default
+sudo ln -sfv /etc/nginx/sites-available/default-ssl /etc/nginx/sites-enabled/default-ssl
+sudo ln -sfv /etc/nginx/sites-available/streaming.dev /etc/nginx/sites-enabled/streaming.dev
+
+
+/etc/php5/fpm/pool.d 에 
+;listen = /var/run/php5-fpm.sock 를
+listen = 127.0.0.1:9000 로 변경.
+첨부된 파일을 복사하면 됨. 유의사항임. 이상하게 unix 파일 소켓을 이용하면 동작하지 않음.
+
+
+
+cd /var/Sites/streaming-bbs.com/doc
+sudo ffserver -f ffserver.conf
+sudo ffmpeg -y -f video4linux2 -s 640x480 -r 30 -i /dev/video0 -f alsa -i pulse -c:v libvpx -preset ultrafast -tune zerolatency -c:a libvorbis -bufsize 3000k -cpu-used 4 -threads 8 http://localhost:8090/streamwebm.ffm
+
+
+
+
+
+
+

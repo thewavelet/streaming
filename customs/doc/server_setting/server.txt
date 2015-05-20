@@ -33,7 +33,7 @@ curl http://icanhazip.com
 sudo apt-get install mysql-server
 sudo mysql_install_db
 sudo mysql_secure_installation
-sudo apt-get install php5-fpm php5-mysql
+sudo apt-get install php5-fpm php5-mysql php5-gd
 
 
 

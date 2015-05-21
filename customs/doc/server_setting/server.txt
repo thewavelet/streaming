@@ -61,5 +61,40 @@ sudo ffmpeg -y -f video4linux2 -s 640x480 -r 30 -i /dev/video0 -f alsa -i pulse 
 
 
 
+apt-get install vsftpd
+
+vi /etc/vsftpd.conf
+write_enable=YES
+chown_uploads=YES
+chown_username=www-data
+chroot_local_user=YES # 자신의 디렉토리 벗어나지 못하게.
+
+service vsftpd restart
+
+adduser dev
+cp /home/dev/.* /var/Sites/streaming-bbs.com/
+vi /var/Sites/streaming-bbs.com/.profile
+umask 000 추가
+
+vi /etc/passwd
+dev의 /home/dev 를 /var/Sites/streaming-bbs.com 으로 변경.
+
+
+
+
+
+cd /var/Sites
+chown -R dev.dev streaming-bbs.com
+find ./streaming-bbs.com/ -type d -exec chmod -R 777 {} \; 
+find ./streaming-bbs.com/ -type f -exec chmod -R 666 {} \;
+
+그냥 위처럼 폴더는 777, 파일은 666 으로 모두 풀자. ftp 로 수정해도 되고... 보안상 어차피 로그인 못하면 접근 못하고, 웹으로 접근하려 해도 어차피 php 스크립트에 단독으로 실행 못하는 부분은 모두 막혀있으므로... 파일 업로드하여 그걸 실행시키도록 하는 해킹같은 경우도 뭔가 명령어가 돌아가야 되는데... php 파일을 업로드 시키고 그 업로드된 php 파일의 경로를 알아내서 웹에서 실행시킨다??? 이 시나리오는 설정으로 충분히 커버해야함. 어차피 data 폴더랑 파일은 권한이 777 666 같이 되어야 하므로 이거랑은 무관.
+그룹권한도 모두... 해당 유저일 경우 그룹권한이 우선시 되어서... 제한됨..
+
+
+
+
+
+
 
 

@@ -1,0 +1,86 @@
+(1) 2단 메뉴의 경우 조사하여 적용.
+
+완료
+이건 기본적용됨.
+
+
+(2) 코인 구매 요청 게시판의 경우 게시판을 하나 더 추가하여 1대1게시판스킨을 만들기 보다, 1:1게시판이라는 기능이 독립적으로 존재하는데 그것을 제목을 '코인 구매 요청' 으로 변경하여 사용.
+
+완료.
+게시판관리 > 1:1문의 설정 에서 SMS 알림 및 이메일 알림을 추가할 수 있음. SMS 의 경우 SMS 관리 부분 설정 필요.
+
+
+(3) admin.menu200.php 에 200500, 가입제한ip관리, ip_exception_list.php 추가. ip_exception_list.php 구현. ip_exception_list.php 에 회원가입시 중복되어도 될 ip 들을 입력할 수 있도록.
+
+완료.
+ip_exception_update.php 도 추가함. 페이징 및 검색기능 삭제. ip 와 내용 입력.
+
+
+(4) 회원관련 스킨을 따로 설정할 수 있으므로 default 를 복사하여 streaming 스킨을 만들고
+register.skin.php 에 아래 기능 추가.
+// 여기에서 member 테이블에 접속한 사용자의 ip 가 있다면 '같은 ip 주소로 가입한 회원이 존재합니다.' 메시지를 보여주고 메인으로 이동.
+// 만약 회원관리 > 가입제한ip관리 에 ip 가 존재한다면 무조건 통과.
+
+register_result.skin.php 에 아래 기능 추가.
+// 이곳에 가입한 회원에게 1 코인을 지급하는 로직 추가.
+
+완료. 
+register_result.skin.php 에 코인 지급을 추가하게 되면 무한 새로고침이 가능하여 안된다. 
+회원 가입하고 나서만 그 페이지에 접근 가능한 줄 알았으나 최초 가입 후 로그인 된 상태에서는 $_SESSION['ss_mb_reg’] 이 계속 남아 있어 무한 접근이 가능하다.
+로그아웃 후에 접근시에는 접근이 안된다.
+따라서 트리거,후크 같은 기능이 있다면 이를 응용하고 이런 기능조차 없다면 코어 로직의 포인트 추가 부분에 코인을 1개 주는 방식으로 다가갈 수 밖에 없다.
+extend 폴더에 coin.extend.php 부분에 회원가입완료시점의 구분자를 캐치하여 구현해주면 될 듯 하다.
+register_form_update.tail.skin.php 를 회원 스킨에 추가해주면 register_form_update 이후의 후크를 넣어줄 수 있다. 여기에 $w = ‘’ 일 경우가 가입일 경우. 여기에 추가.
+
+
+(5) admin.menu400.php 에 menu400, 방송관리, streaming_list.php 추가, streaming_list.php 구현.
+streaming_list.php 에 각 회차별 코인 사용내역 및 방송보기권한 관리할 수 있는 기능. 우선 방송 리스트가 쭉 나오고, 거기에 정보들 (방송중인지 종료인지 방송별로 총 코인 몇개 사용되었는지 등등... 그리고 클릭시에 그곳에 회차별 코인 사용내역 정보들 나오고, 방송보기 권한을 가진 사용자들이 나오고 그 사용자들을 삭제 또는 추가할 수 있도록.)
+
+완료.
+코인테이블에 co_rel_table, co_rel_id 추가. co_expired 도 추가 (이것으로 이 코인을 사용하여 획득한 권한이 유효한지. tinyint(4)).
+streaming_list.php
+제목, 방송 url, 방송상태, 총사용 코인, 생성일, 코인 사용 내역(버튼), 방송 보기 가능 회원(버튼).
+streaming_wr_2_onoff.php 는 방송상태 변경 로직.
+streaming_coin_history.php 는 사용자 코인 사용 내역. 그 회차에 해당하는 코인 사용 내역 리스트.
+streaming_access_member.php 는 방송 보기 가능 회원. 그 회차에 해당하는 방송 보기 가능 회원 리스트 및 추가 삭제할 수 있도록. 삭제시에는 co_expired=1 로 해줌.
+즉, 방송 볼 권한을 가진 회원은 co_content='방송보기', co_rel_table='streaming', co_rel_id='방송보기게시판글id', co_expired=0 인 것이 한개 이상 있어야 함.
+streaming_access_member_add.php, streaming_access_member_delete.php
+
+
+(6) 게시판 streaming 스킨의 view 부분에 코인에 따른 권한 처리. write 부분에 streaming_url (wr_1) 및 방송중/방송종료 플래그 (wr_2) 추가.
+
+완료.
+게시판 streaming 스킨에 write.skin.php, view.skin.php, list.skin.php 에 wr_2 방송상태 관련 사항 추가. list 에는 작성자 대신 방송상태를 넣었음.
+코인에 따른 권한을 처리하였음. 관리자이면 무조건 보기가능. 로그인 상태는 게시판 설정에서. 코인으로 방송볼 권한을 구매함에 따른 권한 처리.
+
+
+(7) 포인트 변환의 경우 쓰기 권한만 노출 시킬 수 있으므로 포인트 변환을 위한 게시판을 하나 생성 후 쓰기 관련된 부분의 스킨만 1000 포인트 > 1 코인 으로 하는 듯이 변경. 스킨 이름을 point2coin 로. 포인트 변환 이라는 버튼을 어디에 노출 시킬 것인가는 적절히.
+
+완료.
+point2coin 게시판 생성. point2coin 게시판 스킨 작성. 분류에 아래를 입력. 그리고 분류 오른쪽 사용에 체크.
+1000포인트를 1코인으로 변환|3000포인트를 3코인으로 변환|5000포인트를 5코인으로 변환|8000포인트를 8코인으로 변환|10000포인트를 10코인으로 변환
+글쓰기 권한만 2로하고 나머지는 모두 10으로.
+전체 검색 사용 체크 해제.
+스킨을 poin2coin 으로 수정.
+point2coin 스킨의 write.skin.php 및 write_update.tail.skin.php 를 수정.
+write.skin.php 의 경우 포인트 변환 페이지가 보여지도록.
+write_update.tail.skin.php 의 경우 위의 분류에 따라 포인트를 차감하고 코인을 입력해주는 로직 추가.
+/write.php?bo_table=point2coin” 이 링크를 index 의 헤더에 오른쪽 상단 메뉴에 추가.
+write_update_head.skin.php 에 제목과 내용을 적절한 값으로 변경하는 로직을 추가. 
+쓰기 페이지 상에서 제목과 내용을 숨기겠지만 html 을 아는 사용자가 변경할 가능성도 있으므로. 그렇다고 아예 전달 안할시에는 write_update.php 에서 걸림.
+
+
+(8) 회원 정보 수정 회원 스킨에 회원 탈퇴 버튼 추가.
+
+완료.
+수정일 경우만. $w == ‘u'
+
+
+(9) 엽전 주기 로직.
+
+완료.
+엽전 주기는 ajax 방식으로 custom 이란 폴더에 coin_present.php 와 coin_present_log.php 를 추가함. 
+streaming board 스킨의 view.skin.php 에 ajax 방식으로 이를 요청함. 엽전을 준 내역을 실시간으로 보는 것은 관리자만 가능.
+
+
+

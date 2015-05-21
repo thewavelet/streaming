@@ -67,7 +67,10 @@ vi /etc/vsftpd.conf
 write_enable=YES
 chown_uploads=YES
 chown_username=www-data
-chroot_local_user=YES # 자신의 디렉토리 벗어나지 못하게.
+
+#chroot_local_user=YES # 자신의 디렉토리 벗어나지 못하게.
+< 이부분은 안함. 접속시 root 즉 홈디렉토리가 쓰기 권한이 있으면 접속이 안되도록 되어 있는데 allow_writeable_chroot=YES 가 이걸 허용하는 거라는데 이게 안먹힘. 다른 꼼수를 써야해서 그냥 이건 포기.
+즉, 디자이너가 상위 디렉토리 모두 접근 가능.
 
 service vsftpd restart
 

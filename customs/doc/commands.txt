@@ -22,3 +22,41 @@ ffmpeg -y -f video4linux2 -s 640x480 -r 30 -i /dev/video0 -f alsa -i pulse -c:v 
 
 
  sudo ffmpeg -f video4linux2 -r 25 -s 640x480 -i /dev/video0 -f alsa -i pulse -c:v libx264 -preset ultrafast -tune zerolatency -c:a libfdk_aac -bufsize 3000k -cpu-used 4 -threads 9 -f rtsp "rtsp://dfac40.entrypoint.cloud.wowza.com/app-dea5/live/8a8f34ff"
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+libvpx : vp8/vp9 codec sdk
+libvorbis : ogg vorbis, non-proprietary, patent-and-royalty-free / MPEG-4 (AAC) 에 대응. MPEG-1,2, audio layer 3, MPEG-4 audio (TwinVQ), WMA, PAC 보다 성능이 좋음.
+
+webM 형식으로 전송하기 위해 코덱을 libvpx 및 libvorbis 라이브러리를 사용하여 vp8/9 와 ogg vorbis 형식으로 영상 및 음성을 전송.
+테스트 결과 크롬에서는 영상 및 음성 모두 지원, 파이어폭스에서는 영상만 지원, 익스플로어에서는 모두 지원하지 않았음.
+
+다른 코덱 MPEG 진영의 H.264 (MPEG-4), mp3 (MPEG-1), AAC (MPEG-4) 코덱 및
+
+http://farukat.es/journal/2011/01/488-google-h264-and-video-web
+http://stackoverflow.com/questions/5687913/webm-vs-ogg-theora
+
+webM, flv, H.264/MPEG-4 AVC 형식의 포맷으로 전송 가능.
+libx264 및 libfaac 코덱을 이용하여 MPEG 진영 기술로 전송 테스트 및 브라우저 테스트 해볼 수도 있음.
+위의 링크 대로라면 h264 가 플래쉬 플러그인까지 하녀 모두 지원되는 형식이지만 플래쉬 플러그인을 사용하지 않을 것이라..
+기본적으로 video.js 를 사용하므로 지원하지 않을 경우 플래쉬 플러그인 로드를 하게 되어 있으므로
+h264 의 경우 대부분의 브라우저에서 지원 가능할 듯 함. 모바일 포함.
+아직 전송 테스트를 해보지 못했음. ie9 에서는 기본 제공, 기타 크롬, 파폭, 오페라, ie8 이하는 플래쉬 플러그인 필요.
+
+
+webM (컨테이너 포맷) = vp8/9 + vorbis
+Ogg (컨테이너 포맷) = theora 비디오와 vorbis 오디오
+
+
+http://en.wikipedia.org/wiki/Comparison_of_video_container_formats
+
+
+
+ 
+ 

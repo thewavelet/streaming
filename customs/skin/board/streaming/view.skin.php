@@ -5,8 +5,7 @@ include_once(G5_LIB_PATH.'/thumbnail.lib.php');
 // add_stylesheet('css 구문', 출력순서); 숫자가 작을 수록 먼저 출력됨
 add_stylesheet('<link rel="stylesheet" href="'.$board_skin_url.'/style.css">', 0);
 
-add_stylesheet('<link href="//vjs.zencdn.net/4.12/video-js.css" rel="stylesheet">', 1);
-add_javascript('<script src="//vjs.zencdn.net/4.12/video.js"></script>', 2);
+add_javascript('<script src="http://jwpsrv.com/library/CFoCQANdEeWgqQp+lcGdIw.js"></script>', 1);
 
 // 관리자가 아니라면
 if($is_admin != 'super') {
@@ -220,7 +219,7 @@ for (var i=0; i<streamingLinkEl.length; i++) {
         <?php
         ob_start();
          ?>
-        <?php if ($prev_href || $next_href) { ?>
+        <?php /* if ($prev_href || $next_href) { */ ?>
         <ul class="bo_v_nb">
             <?php /*
             <?php if ($prev_href) { ?><li><a href="<?php echo $prev_href ?>" class="btn_b01">이전글</a></li><?php } ?>
@@ -228,7 +227,7 @@ for (var i=0; i<streamingLinkEl.length; i++) {
             */ ?>
             <li><a href="/custom/coin_present.php" class="btn_admin coin_present">엽전 선물 하기</a></li>
         </ul>
-        <?php } ?>
+        <?php /* } */ ?>
 
         <ul class="bo_v_com">
             <?php if ($update_href) { ?><li><a href="<?php echo $update_href ?>" class="btn_b01">수정</a></li><?php } ?>
@@ -253,22 +252,20 @@ for (var i=0; i<streamingLinkEl.length; i++) {
         <h2 id="bo_v_atc_title">본문</h2>
 
         <div id="bo_v_streaming" style="display:inline-block;">
-            <video id="example_video_1" class="video-js vjs-default-skin"
-            autoplay="autoplay"
-            preload="auto" width="540" height="420"
-            poster="http://video-js.zencoder.com/oceans-clip.png"
-            data-setup='{"example_option":true}'>
-            <source src="<?php echo $view['wr_1'] ?>" type='video/flv' />
-            <source src="<?php echo $view['wr_1'] ?>" type='video/mp4' />
-            <source src="<?php echo $view['wr_1'] ?>" type='video/webm' />
-            <source src="<?php echo $view['wr_1'] ?>" type='video/ogg' />
-            <!--
-            <source src="http://video-js.zencoder.com/oceans-clip.mp4" type='video/mp4' />
-            <source src="http://video-js.zencoder.com/oceans-clip.webm" type='video/webm' />
-            <source src="http://video-js.zencoder.com/oceans-clip.ogv" type='video/ogg' />
-            -->
-            <p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>
-            </video>
+            
+			<div id='playerGewZnCCgPDIO'></div>
+			<script type='text/javascript'>
+				jwplayer('playerGewZnCCgPDIO').setup({
+					file: "<?php echo $view['wr_1'] ?>",
+					image: 'http://hanmonet.com/img/logo.jpg',
+					title: 'hanmonet',
+					width: '540',
+					height: '420',
+					autostart: 'true',
+					primary: 'flash'
+				});
+			</script>
+			
         </div>
 
  

@@ -11,7 +11,8 @@ $rel_id     	= (int)$_POST['rel_id'];
 $datetime		= $_POST['datetime'];
 
 $sql = " select * 
-            from {$g5['coin_table']}
+            from {$g5['coin_table']} left join {$g5['member_table']}
+            on {$g5['coin_table']}.mb_id = {$g5['member_table']}.mb_id 
             where co_content = '선물하기' and co_rel_table = '{$rel_table}' and co_rel_id = '{$rel_id}' ";
 if($datetime) 
 {
@@ -32,6 +33,7 @@ for($i = 0; $i < $num_result; $i++)
 	$row = sql_fetch_array($result);
 	$json = $json . '{ "co_id" : "' . $row['co_id'] . '", ';
 	$json = $json . ' "mb_id" : "' . $row['mb_id'] . '", ';
+	$json = $json . ' "mb_nick" : "' . $row['mb_nick'] . '", ';
 	$json = $json . ' "co_datetime" : "' . $row['co_datetime'] . '", ';
 	$json = $json . ' "co_content" : "' . $row['co_content'] . '", ';
 	$json = $json . ' "co_coin" : "' . $row['co_coin'] . '", ';

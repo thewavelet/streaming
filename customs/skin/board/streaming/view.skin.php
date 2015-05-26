@@ -301,7 +301,7 @@ for (var i=0; i<streamingLinkEl.length; i++) {
                     function(data) {
                         if(data.length > 0) {
                             for(var i = 0; i < data.length; i++)
-                                $('#coin-present-log').append('<p>' + data[i].mb_id + ' 님께서 엽전 ' + Math.abs(data[i].co_coin) + ' 개를 선물하셨습니다. - <span>' + data[i].co_datetime + '</span></p>');    
+                                $('#coin-present-log').append('<p>' + data[i].mb_nick + ' 님께서 엽전 ' + Math.abs(data[i].co_coin) + ' 개를 선물하셨습니다. - <span>' + data[i].co_datetime + '</span></p>');    
                         }
                         
                     }, "json"
@@ -406,14 +406,16 @@ for (var i=0; i<streamingLinkEl.length; i++) {
 
     <?php
     // 코멘트 입출력
-    include_once('./view_comment.php');
+    /* include_once('./view_comment.php'); */
      ?>
 
+    <?php /* ?>
     <!-- 링크 버튼 시작 { -->
     <div id="bo_v_bot">
         <?php echo $link_buttons ?>
     </div>
     <!-- } 링크 버튼 끝 -->
+    <?php */ ?>
 
 </article>
 <!-- } 게시판 읽기 끝 -->

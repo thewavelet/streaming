@@ -5,7 +5,11 @@ include_once(G5_LIB_PATH.'/thumbnail.lib.php');
 // add_stylesheet('css 구문', 출력순서); 숫자가 작을 수록 먼저 출력됨
 add_stylesheet('<link rel="stylesheet" href="'.$board_skin_url.'/style.css">', 0);
 
-add_javascript('<script src="http://jwpsrv.com/library/CFoCQANdEeWgqQp+lcGdIw.js"></script>', 1);
+// add_javascript('<script src="http://jwpsrv.com/library/CFoCQANdEeWgqQp+lcGdIw.js"></script>', 1);
+
+
+add_javascript('<script type="text/javascript" src="'.$board_skin_url.'/jwplayer/jwplayer.js"></script>', 1);
+add_javascript('<script type="text/javascript">jwplayer.key="6x8dXYIiiY1hys1xxgyxEA7cvMksLlaR+BtUFyNIFT0=";</script>', 2);
 
 // 관리자가 아니라면
 if($is_admin != 'super') {

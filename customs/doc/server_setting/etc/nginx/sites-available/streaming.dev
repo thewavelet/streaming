@@ -1,6 +1,6 @@
 server {
     listen       80;
-    server_name  streaming.dev;
+    server_name  hanmonet.com;
     root       /var/Sites/streaming-bbs.com/;
  
     access_log  /var/log/nginx/streaming.access.log  main;

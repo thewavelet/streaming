@@ -2,14 +2,16 @@
 if (!defined("_GNUBOARD_")) exit; // 개별 페이지 접근 불가
 include_once(G5_LIB_PATH.'/thumbnail.lib.php');
 
+add_stylesheet('<link rel="stylesheet" href="'.$board_skin_url.'/jquery-ui-1.11.4/jquery-ui.min.css">', 0);
+add_javascript('<script src="'.$board_skin_url.'/jquery-ui-1.11.4/jquery-ui.min.js"></script>', 1);
+
 // add_stylesheet('css 구문', 출력순서); 숫자가 작을 수록 먼저 출력됨
-add_stylesheet('<link rel="stylesheet" href="'.$board_skin_url.'/style.css">', 0);
+add_stylesheet('<link rel="stylesheet" href="'.$board_skin_url.'/style.css">', 2);
 
 // add_javascript('<script src="http://jwpsrv.com/library/CFoCQANdEeWgqQp+lcGdIw.js"></script>', 1);
 
-
-add_javascript('<script type="text/javascript" src="'.$board_skin_url.'/jwplayer/jwplayer.js"></script>', 1);
-add_javascript('<script type="text/javascript">jwplayer.key="6x8dXYIiiY1hys1xxgyxEA7cvMksLlaR+BtUFyNIFT0=";</script>', 2);
+add_javascript('<script type="text/javascript" src="'.$board_skin_url.'/jwplayer/jwplayer.js"></script>', 3);
+add_javascript('<script type="text/javascript">jwplayer.key="6x8dXYIiiY1hys1xxgyxEA7cvMksLlaR+BtUFyNIFT0=";</script>', 4);
 
 // 관리자가 아니라면
 if($is_admin != 'super') {
@@ -229,7 +231,7 @@ for (var i=0; i<streamingLinkEl.length; i++) {
             <?php if ($prev_href) { ?><li><a href="<?php echo $prev_href ?>" class="btn_b01">이전글</a></li><?php } ?>
             <?php if ($next_href) { ?><li><a href="<?php echo $next_href ?>" class="btn_b01">다음글</a></li><?php } ?>
             */ ?>
-            <li><a href="/custom/coin_present.php" class="btn_admin coin_present">엽전 선물 하기</a></li>
+            <li><a href="#" class="btn_admin coin_present">엽전 선물 하기</a></li>
         </ul>
         <?php /* } */ ?>
 
@@ -424,6 +426,32 @@ for (var i=0; i<streamingLinkEl.length; i++) {
 </article>
 <!-- } 게시판 읽기 끝 -->
 
+
+<div id="exhibition" style="display:none;">
+
+<div id="coin-present-prompt" title="코인 선물 하기">
+
+    <p>숫자를 입력하시고 선물하기를 하시면 알림 없이 코인을 소모하오니 주의바랍니다.</p>
+
+    <br>
+
+    <form>
+    <fieldset>
+            <label for="coin-count">몇개?</label>
+            <input type="text" id="coin-count">
+            <input type="submit" value="선물하기">
+    </fieldset>
+    </form>
+
+    <br>
+
+    <p style="color:red" class="msg"></p>
+</div>
+
+</div>
+
+
+
 <script>
 <?php if ($board['bo_download_point'] < 0) { ?>
 $(function() {
@@ -475,16 +503,54 @@ $(function() {
     // 이미지 리사이즈
     $("#bo_v_atc").viewimageresize();
 
+
+    // 코인 선물하기
+    var dialog = $('#exhibition #coin-present-prompt').dialog({
+        autoOpen: false,
+        height: 250,
+        width: 350,
+        modal: false,
+        buttons: {
+            "닫기": function() {
+                dialog.dialog( "close" );
+            }
+        },
+        close: function() {
+            form[0].reset();
+            dialog.find('.msg').text('');
+        }
+    });
+
+    var form = dialog.find("form").on("submit", function(e) {
+        e.preventDefault();
+
+        var $thatForm = $(this);
+        var amount = $thatForm.find('#coin-count').val();
+        $.post(
+            '/custom/coin_present.php',
+            {wr_id: <?php echo $view['wr_id']; ?>, amount: amount},
+            function(data) {
+                if(data) {
+                    dialog.find('.msg').text(data);
+                    return false;    
+                }
+                dialog.find('.msg').text('엽전 ' + amount + ' 개를 선물하였습니다.');
+                $outloginCoin = $('#ol_after_coin>strong')
+                $outloginCoin.text(Number($outloginCoin.text()) - Math.abs(amount));
+            }
+        );
+
+    });
+
+
     $("a.coin_present").click(function(e) {
         e.preventDefault();
-        var amount = prompt('몇개?');
-        if(!amount || amount < 1) {
-            alert("1개 이상을 입력해 주세요.");
-            return false;
-        }
 
-        excute_coin_present(this.href, <?php echo $view['wr_id'] ?>, amount);
+        dialog.dialog('open');
+
     });
+
+
 });
 
 function excute_good(href, $el, $tx)
@@ -512,21 +578,6 @@ function excute_good(href, $el, $tx)
     );
 }
 
-function excute_coin_present(href, wr_id, amount)
-{
-    $.post(
-        href,
-        {wr_id: wr_id, amount: amount},
-        function(data) {
-            if(data) {
-                alert(data); return false;    
-            }
-            alert('선물하였습니다.');
-            $outloginCoin = $('#ol_after_coin>strong')
-            $outloginCoin.text(Number($outloginCoin.text()) - Math.abs(amount));
-        }
-    );
-}
 
 </script>
 <!-- } 게시글 읽기 끝 -->
